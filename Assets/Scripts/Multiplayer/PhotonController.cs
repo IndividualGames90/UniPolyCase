@@ -14,9 +14,10 @@ namespace IndividualGames.UniPoly.Multiplayer
         [SerializeField] private CanvasEventHub m_canvasEventHub;
 
         public static int PlayerNumber => PhotonNetwork.LocalPlayer.ActorNumber;
+
         public readonly static BasicSignal JoinedRoom = new();
 
-        private const string c_roomName = "HappyHourStrategyCase.ServerRoom01";
+        private const string c_roomName = "UniPoly.ServerRoom01";
 
 
         void Awake()
@@ -25,31 +26,27 @@ namespace IndividualGames.UniPoly.Multiplayer
             PhotonNetwork.ConnectUsingSettings();
         }
 
-
         private void JoinLobby()
         {
             PhotonNetwork.JoinLobby();
         }
-
 
         public static bool RoomIsMaxxed()
         {
             return PhotonNetwork.CurrentRoom.PlayerCount > PhotonNetwork.CurrentRoom.MaxPlayers;
         }
 
-
         public override void OnJoinedLobby()
         {
             PhotonNetwork.JoinOrCreateRoom(c_roomName,
                                            new RoomOptions
                                            {
-                                               MaxPlayers = 2,
+                                               MaxPlayers = 4,
                                                IsOpen = true,
                                                IsVisible = true
                                            },
                                            TypedLobby.Default);
         }
-
 
         public override void OnJoinedRoom()
         {
@@ -64,24 +61,20 @@ namespace IndividualGames.UniPoly.Multiplayer
             }
         }
 
-
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.LogError($"{returnCode} {message}");
         }
-
 
         public override void OnCreateRoomFailed(short returnCode, string message)
         {
             Debug.LogError($"{returnCode} {message}");
         }
 
-
         public static void Disconnect()
         {
             PhotonNetwork.Disconnect();
         }
-
 
         public override void OnLeftRoom()
         {

@@ -12,7 +12,7 @@ namespace IndividualGames.UniPoly.Player
 
         private void Awake()
         {
-            m_keyboardController = new(transform);
+            m_keyboardController = new(transform, Camera.main);
             m_mouseController = new(transform);
         }
 
