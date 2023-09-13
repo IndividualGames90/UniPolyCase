@@ -2,7 +2,7 @@ using IndividualGames.UniPoly.Multiplayer;
 using TMPro;
 using UnityEngine;
 
-namespace IndividualGames.HappyHourStrategyCase
+namespace IndividualGames.UniPoly.UI
 {
     /// <summary>
     /// UI element callback handler.
@@ -10,17 +10,13 @@ namespace IndividualGames.HappyHourStrategyCase
     public class CanvasController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI m_playerLabel;
-        [SerializeField] private TextMeshProUGUI m_resoureLabel;
-        //[SerializeField] private UnitSignalHub m_unitSignalHub;
-        [SerializeField] private GameObject m_menuFrame;
+        [SerializeField] private TextMeshProUGUI m_itemPickUpLabel;
 
 
         private void Awake()
         {
-            Screen.orientation = ScreenOrientation.LandscapeRight;
-            m_menuFrame.SetActive(true);
             PhotonController.JoinedRoom.Connect(PlayerJoined);
-            //m_unitSignalHub.ConnectToHub(ResourceCollected);
+            GetComponent<CanvasEventHub>().ItemDetected.Connect(ItemPickUpUpdated);
         }
 
 
@@ -37,15 +33,13 @@ namespace IndividualGames.HappyHourStrategyCase
 
         public void PlayerJoined()
         {
-            m_menuFrame.SetActive(false);
             m_playerLabel.text = $"Player {PhotonController.PlayerNumber}";
-            //OptimizationController.Instance.EnableGameElements();
         }
 
 
-        public void ResourceCollected(int a_resourceCount)
+        public void ItemPickUpUpdated(bool a_detected)
         {
-            m_resoureLabel.text = $"Wood: {a_resourceCount}";
+            m_itemPickUpLabel.gameObject.SetActive(a_detected);
         }
     }
 }

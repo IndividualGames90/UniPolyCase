@@ -28,18 +28,43 @@ namespace IndividualGames.UniPoly.Player
 
         private Camera m_mainCamera;
 
-        public KeyboardController(Transform a_transform, Camera a_mainCamera)
+        private bool m_itemDetected = false;
+        private ItemController m_itemController;
+        private ItemDetector m_itemDetector;
+
+        public KeyboardController(Transform a_transform,
+                                  Camera a_mainCamera,
+                                  ItemDetector a_itemDetector,
+                                  ItemController a_itemController)
         {
             m_transform = a_transform;
             m_rigidbody = a_transform.GetComponent<Rigidbody>();
             m_landingDistance = a_transform.localScale.y / 2 + c_landingPadding;
             m_mainCamera = a_mainCamera;
+            a_itemDetector.ItemDetected.Connect(OnItemDetected);
+            m_itemDetector = a_itemDetector;
+            m_itemController = a_itemController;
         }
 
         public void UpdateState()
         {
             AcquireAxesInput();
             AcquireJumpInput();
+            AcquireItemInput();
+        }
+
+        /// <summary> Acquire keyboard input for item grab or drop. </summary>
+        private void AcquireItemInput()
+        {
+            if (Input.GetKeyDown(KeyCode.E) && m_itemDetected)
+            {
+                m_itemDetector.CurrentItemGrabbed();
+                m_itemController.GrabItem(m_itemDetector.DetectedItem);
+            }
+            else if (Input.GetKeyDown(KeyCode.G))
+            {
+                m_itemController.DropItem();
+            }
         }
 
         /// <summary> Acquire keyboard input for jumping. </summary>
@@ -102,6 +127,12 @@ namespace IndividualGames.UniPoly.Player
                     m_rigidbody.AddForce(Vector3.up * c_jumpingForce, ForceMode.Impulse);
                 }
             }
+        }
+
+        /// <summary> Item detection state is being updated. </summary>
+        private void OnItemDetected(bool a_detected)
+        {
+            m_itemDetected = a_detected;
         }
     }
 }

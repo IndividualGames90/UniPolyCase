@@ -10,5 +10,4 @@ namespace IndividualGames.UniPoly.Utils
         public static LayerMask Ground = LayerMask.GetMask("Ground");
         public static LayerMask Player = LayerMask.GetMask("Player");
     }
-
 }

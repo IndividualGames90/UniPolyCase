@@ -1,4 +1,4 @@
-using IndividualGames.HappyHourStrategyCase;
+using IndividualGames.UniPoly.UI;
 using IndividualGames.UniPoly.Utils;
 using Photon.Pun;
 using Photon.Realtime;
