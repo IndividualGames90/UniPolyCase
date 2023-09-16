@@ -32,9 +32,13 @@ namespace IndividualGames.UniPoly.Player
 
         public void DropItem()
         {
-            m_grabbedItemLeft.transform.parent = null;
-            m_grabbedItemLeft.transform.position = m_dropPosition.position;
-            m_grabbedItemLeft.GetComponent<BoxCollider>().isTrigger = true;
+            if (m_grabbedItemLeft != null)
+            {
+                m_grabbedItemLeft.transform.parent = null;
+                m_grabbedItemLeft.transform.position = m_dropPosition.position;
+                m_grabbedItemLeft.GetComponent<BoxCollider>().isTrigger = true;
+                m_grabbedItemLeft = null;
+            }
         }
     }
 }

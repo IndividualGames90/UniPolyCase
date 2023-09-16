@@ -1,7 +1,7 @@
 ﻿namespace IndividualGames.UniPoly.Player
 {
     /// <summary>
-    /// Updateable class.
+    /// Able to be updated to function.
     /// </summary>
     public interface IUpdateable
     {

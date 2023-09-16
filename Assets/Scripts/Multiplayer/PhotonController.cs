@@ -15,22 +15,34 @@ namespace IndividualGames.UniPoly.Multiplayer
 
         public static int PlayerNumber => PhotonNetwork.LocalPlayer.ActorNumber;
 
+        public readonly static BasicSignal NetworkConnecting = new();
+        public readonly static BasicSignal JoinedLobby = new();
+        public readonly static BasicSignal JoiningLobby = new();
         public readonly static BasicSignal JoinedRoom = new();
 
         private const string c_roomName = "UniPoly.ServerRoom01";
 
+        private bool m_networkConnectingInProgress = false;
+
+        private WaitForSeconds m_waitNetworkConnecting = new(1f);
 
         void Awake()
         {
-            m_canvasEventHub.JoinGame.Connect(JoinLobby);
-            PhotonNetwork.ConnectUsingSettings();
+            m_canvasEventHub.JoinGame.Connect(StartNetworkConnecting);
         }
 
-        private void JoinLobby()
+        /// <summary> Try to join a Photon lobby. </summary>
+        private void StartNetworkConnecting()
         {
-            PhotonNetwork.JoinLobby();
+            if (!m_networkConnectingInProgress)
+            {
+                m_networkConnectingInProgress = true;
+                PhotonNetwork.ConnectUsingSettings();
+                NetworkConnecting.Emit();
+            }
         }
 
+        /// <summary> Room has reached it's full player count. </summary>
         public static bool RoomIsMaxxed()
         {
             return PhotonNetwork.CurrentRoom.PlayerCount > PhotonNetwork.CurrentRoom.MaxPlayers;
@@ -38,6 +50,7 @@ namespace IndividualGames.UniPoly.Multiplayer
 
         public override void OnJoinedLobby()
         {
+            JoinedLobby.Emit();
             PhotonNetwork.JoinOrCreateRoom(c_roomName,
                                            new RoomOptions
                                            {
@@ -61,6 +74,18 @@ namespace IndividualGames.UniPoly.Multiplayer
             }
         }
 
+        public override void OnConnectedToMaster()
+        {
+            m_networkConnectingInProgress = false;
+            JoinLobby();
+        }
+
+        private void JoinLobby()
+        {
+            PhotonNetwork.JoinLobby();
+            JoiningLobby.Emit();
+        }
+
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.LogError($"{returnCode} {message}");
@@ -71,11 +96,13 @@ namespace IndividualGames.UniPoly.Multiplayer
             Debug.LogError($"{returnCode} {message}");
         }
 
+        /// <summary> Disconnect from Photon Network. </summary>
         public static void Disconnect()
         {
             PhotonNetwork.Disconnect();
         }
 
+        /// <summary> Room is Left. </summary>
         public override void OnLeftRoom()
         {
             PhotonNetwork.LeaveLobby();

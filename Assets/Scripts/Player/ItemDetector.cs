@@ -1,3 +1,4 @@
+using IndividualGames.UniPoly.SceneManagement;
 using IndividualGames.UniPoly.UI;
 using IndividualGames.UniPoly.Utils;
 using UnityEngine;
@@ -15,12 +16,13 @@ namespace IndividualGames.UniPoly.Player
         public GameObject DetectedItem => m_detectedItem;
         private GameObject m_detectedItem = null;
 
-        [SerializeField] private CanvasEventHub canvasEventHub;
-
-
         private void Awake()
         {
-            ItemDetected.Connect(canvasEventHub.OnItemDetected);
+            var canvasController = (CanvasController)GameObject.FindGameObjectWithTag(Tags.SceneController)
+                                    .GetComponent<SceneController>()
+                                    .Retrieve(CanvasController.Hash);
+
+            ItemDetected.Connect(canvasController.GetComponent<CanvasEventHub>().OnItemDetected);
         }
 
         private void OnTriggerEnter(Collider other)

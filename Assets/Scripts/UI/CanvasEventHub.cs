@@ -29,7 +29,6 @@ namespace IndividualGames.UniPoly.UI
         /// <summary> Item is detected. </summary>
         public void OnItemDetected(bool a_detected)
         {
-            Debug.Log(a_detected);
             ItemDetected.Emit(a_detected);
         }
     }
