@@ -15,6 +15,7 @@ namespace IndividualGames.UniPoly.UI
 
         [SerializeField] private TextMeshProUGUI m_playerLabel;
         [SerializeField] private TextMeshProUGUI m_itemPickUpLabel;
+        [SerializeField] private GameObject m_connectButton;
 
         public static readonly int Hash = nameof(CanvasController).GetHashCode();
 
@@ -26,7 +27,7 @@ namespace IndividualGames.UniPoly.UI
             GetComponent<CanvasEventHub>().ItemDetected.Connect(ItemPickUpUpdated);
         }
 
-
+        /// <summary> Quit application. </summary>
         public void ExitGame()
         {
             if (Application.platform == RuntimePlatform.Android)
@@ -37,13 +38,15 @@ namespace IndividualGames.UniPoly.UI
             }
         }
 
-
+        /// <summary> Player Joined game. </summary>
         public void PlayerJoined()
         {
             m_playerLabel.text = $"Player {PhotonController.PlayerNumber}";
+            m_connectButton.SetActive(false);
+
         }
 
-
+        /// <summary> Item pick up state changed. </summary>
         public void ItemPickUpUpdated(bool a_detected)
         {
             m_itemPickUpLabel.gameObject.SetActive(a_detected);

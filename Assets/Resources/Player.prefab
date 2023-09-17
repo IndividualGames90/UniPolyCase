@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2098818938}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.709, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 475794017207186177}
   - component: {fileID: -244298524125457458}
   - component: {fileID: 187316320}
+  - component: {fileID: 4138207626195003950}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -161,7 +162,7 @@ Transform:
   m_GameObject: {fileID: 4455679304797101842}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0.002899349, y: 0.97, z: 0.0028993501}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0000002, y: 1, z: 1.0000002}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4455679302869855751}
@@ -236,6 +237,7 @@ MonoBehaviour:
   m_leftHand: {fileID: 4455679304803597402}
   m_rightHand: {fileID: 4455679304891016110}
   m_dropPosition: {fileID: 2098818939}
+  BlockPlayerControls: 0
 --- !u!136 &4455679304797101852
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -317,7 +319,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bf015971b0da3842890a2b361b0f41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasEventHub: {fileID: 0}
+--- !u!114 &4138207626195003950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4455679304797101842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deeca3139832a814a8ff50903507d624, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4455679304803597403
 GameObject:
   m_ObjectHideFlags: 0

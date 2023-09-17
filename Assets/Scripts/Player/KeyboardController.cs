@@ -1,3 +1,4 @@
+using IndividualGames.UniPoly.GameElements;
 using IndividualGames.UniPoly.Utils;
 using UnityEngine;
 
@@ -32,18 +33,31 @@ namespace IndividualGames.UniPoly.Player
         private ItemController m_itemController;
         private ItemDetector m_itemDetector;
 
+        private IActivateable m_nearbyActivateable = null;
+        private bool m_nearbyActivateableEntered = false;
+
         public KeyboardController(Transform a_transform,
                                   Camera a_mainCamera,
                                   ItemDetector a_itemDetector,
-                                  ItemController a_itemController)
+                                  ItemController a_itemController,
+                                  BasicSignal<(bool, IActivateable)> a_activatableDetected)
         {
             m_transform = a_transform;
             m_rigidbody = a_transform.GetComponent<Rigidbody>();
             m_landingDistance = a_transform.localScale.y / 2 + c_landingPadding;
             m_mainCamera = a_mainCamera;
-            a_itemDetector.ItemDetected.Connect(OnItemDetected);
             m_itemDetector = a_itemDetector;
             m_itemController = a_itemController;
+
+            a_itemDetector.ItemDetected.Connect(OnItemDetected);
+            a_activatableDetected.Connect((a_tuple) => OnActivatableDetected(a_tuple.Item1, a_tuple.Item2));
+        }
+
+        /// <summary> Activatable detected near player. </summary>
+        private void OnActivatableDetected(bool a_entered, IActivateable a_activateable)
+        {
+            m_nearbyActivateableEntered = a_entered;
+            m_nearbyActivateable = a_activateable;
         }
 
         public void UpdateState()
@@ -64,6 +78,18 @@ namespace IndividualGames.UniPoly.Player
             else if (Input.GetKeyDown(KeyCode.G))
             {
                 m_itemController.DropItem();
+            }
+
+            if (Input.GetKeyDown(KeyCode.E) && m_nearbyActivateableEntered)
+            {
+                if (!m_nearbyActivateable.ActivationState)
+                {
+                    m_nearbyActivateable.Activate();
+                }
+                else
+                {
+                    m_nearbyActivateable.Deactivate();
+                }
             }
         }
 

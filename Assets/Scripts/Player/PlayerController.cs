@@ -26,8 +26,16 @@ namespace IndividualGames.UniPoly.Player
         {
             GameObject.FindGameObjectWithTag(Tags.SceneController).GetComponent<SceneController>().Register(PlayerHash, this);
 
-            m_itemController = new(m_leftHand, m_rightHand, m_dropPosition);
-            m_keyboardController = new(transform, Camera.main, GetComponent<ItemDetector>(), m_itemController);
+            m_itemController = new(m_leftHand,
+                                   m_rightHand,
+                                   m_dropPosition);
+
+            m_keyboardController = new(transform,
+                                       Camera.main,
+                                       GetComponent<ItemDetector>(),
+                                       m_itemController,
+                                       GetComponent<ActivatableDetector>().ActivatableDetected);
+
             m_mouseController = new(transform);
         }
 
