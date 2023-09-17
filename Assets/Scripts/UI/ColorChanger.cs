@@ -1,14 +1,14 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace IndividualGames.HappyHourStrategyCase
+namespace IndividualGames.UniPoly.UI
 {
     /// <summary>
-    /// Cycles through all colors given an image component.
+    /// Changes color of UI elements in a HSV cycle.
     /// </summary>
     public class ColorChanger : MonoBehaviour
     {
-        [SerializeField] private Image m_image;
+        [SerializeField] private Graphic m_graphic = null;
 
         private float m_h;
         private float m_s;
@@ -21,16 +21,16 @@ namespace IndividualGames.HappyHourStrategyCase
 
         private void Awake()
         {
-            m_a = m_image.color.a;
+            m_a = m_graphic.color.a;
         }
-
 
         private void Update()
         {
-            m_image.color = CycleColor(m_image.color);
+            m_graphic.color = CycleColor(m_graphic.color);
         }
 
 
+        /// <summary> Cycle color in HSV. </summary>
         protected virtual Color CycleColor(Color a_originalColor)
         {
             Color.RGBToHSV(a_originalColor, out m_h, out m_s, out m_v);

@@ -1,3 +1,4 @@
+using IndividualGames.UniPoly.GameElements;
 using IndividualGames.UniPoly.Utils;
 using UnityEngine;
 
@@ -18,24 +19,78 @@ namespace IndividualGames.UniPoly.Player
         private float m_verticalInput;
         private float m_landingDistance;
 
-        private const float c_moveSpeed = 5f;
+        private const float c_moveSpeed = 10f;
         private const float c_landingPadding = 1f;
         private const float c_jumpingForce = 25f;
+        private const float c_gravityForce = 5f;
 
         private Rigidbody m_rigidbody;
         private Vector3 m_movementVector;
 
-        public KeyboardController(Transform a_transform)
+        private Camera m_mainCamera;
+
+        private bool m_itemDetected = false;
+        private ItemController m_itemController;
+        private ItemDetector m_itemDetector;
+
+        private IActivateable m_nearbyActivateable = null;
+        private bool m_nearbyActivateableEntered = false;
+
+        public KeyboardController(Transform a_transform,
+                                  Camera a_mainCamera,
+                                  ItemDetector a_itemDetector,
+                                  ItemController a_itemController,
+                                  BasicSignal<(bool, IActivateable)> a_activatableDetected)
         {
             m_transform = a_transform;
             m_rigidbody = a_transform.GetComponent<Rigidbody>();
             m_landingDistance = a_transform.localScale.y / 2 + c_landingPadding;
+            m_mainCamera = a_mainCamera;
+            m_itemDetector = a_itemDetector;
+            m_itemController = a_itemController;
+
+            a_itemDetector.ItemDetected.Connect(OnItemDetected);
+            a_activatableDetected.Connect((a_tuple) => OnActivatableDetected(a_tuple.Item1, a_tuple.Item2));
+        }
+
+        /// <summary> Activatable detected near player. </summary>
+        private void OnActivatableDetected(bool a_entered, IActivateable a_activateable)
+        {
+            m_nearbyActivateableEntered = a_entered;
+            m_nearbyActivateable = a_activateable;
         }
 
         public void UpdateState()
         {
             AcquireAxesInput();
             AcquireJumpInput();
+            AcquireItemInput();
+        }
+
+        /// <summary> Acquire keyboard input for item grab or drop. </summary>
+        private void AcquireItemInput()
+        {
+            if (Input.GetKeyDown(KeyCode.E) && m_itemDetected)
+            {
+                m_itemDetector.CurrentItemGrabbed();
+                m_itemController.GrabItem(m_itemDetector.DetectedItem);
+            }
+            else if (Input.GetKeyDown(KeyCode.G))
+            {
+                m_itemController.DropItem();
+            }
+
+            if (Input.GetKeyDown(KeyCode.E) && m_nearbyActivateableEntered)
+            {
+                if (!m_nearbyActivateable.ActivationState)
+                {
+                    m_nearbyActivateable.Activate();
+                }
+                else
+                {
+                    m_nearbyActivateable.Deactivate();
+                }
+            }
         }
 
         /// <summary> Acquire keyboard input for jumping. </summary>
@@ -66,13 +121,19 @@ namespace IndividualGames.UniPoly.Player
         /// <summary> Apply movement to transform. </summary>
         private void ApplyMovement()
         {
-            ///CaseNote: We update the existing vector 3 to avoid garbage.
-            m_movementVector.x = m_horizontalInput;
-            m_movementVector.y = 0f;
-            m_movementVector.z = m_verticalInput;
-            m_movementVector *= c_moveSpeed * Time.deltaTime;
+            var playerHit = Raycaster.HitPlayer(m_mainCamera.ScreenPointToRay(Input.mousePosition),
+                                                Mathf.Infinity);
 
-            m_transform.Translate(m_movementVector);
+            if (!playerHit.Item1)
+            {
+                ///CaseNote: We update the existing vector3 to avoid garbage.
+                m_movementVector.x = m_horizontalInput;
+                m_movementVector.y = 0f;
+                m_movementVector.z = m_verticalInput;
+                m_movementVector *= c_moveSpeed * Time.deltaTime;
+
+                m_transform.Translate(m_movementVector);
+            }
         }
 
         /// <summary> Check for landing. </summary>
@@ -92,6 +153,12 @@ namespace IndividualGames.UniPoly.Player
                     m_rigidbody.AddForce(Vector3.up * c_jumpingForce, ForceMode.Impulse);
                 }
             }
+        }
+
+        /// <summary> Item detection state is being updated. </summary>
+        private void OnItemDetected(bool a_detected)
+        {
+            m_itemDetected = a_detected;
         }
     }
 }
