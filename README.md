@@ -6,4 +6,11 @@ Players can open/close doors.
 Players can interract with items on the ground.
 Players can move with basic PC controls and jump.
 
-All events are registered on network.
+All events are registered on network.  
+
+Packages Used:  
+Photon Network 2  
+DoTween
+Cinemachine
+IndividualGames.Codebase(Partial)
+TextMeshPro
