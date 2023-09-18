@@ -1,4 +1,6 @@
 using DG.Tweening;
+using IndividualGames.UniPoly.Multiplayer;
+using Photon.Pun;
 using UnityEngine;
 
 namespace IndividualGames.UniPoly.GameElements
@@ -35,7 +37,7 @@ namespace IndividualGames.UniPoly.GameElements
         /// <summary> Activate door functionality. </summary>
         public void Activate()
         {
-
+            PhotonController.TransferOwnershipToLocal(GetComponent<PhotonView>());
             var rotation = transform.rotation;
             rotation = Quaternion.Euler(0, m_doorOpenAngle, 0);
             transform.DORotate(rotation.eulerAngles, m_doorOpenSpeed);
@@ -45,6 +47,7 @@ namespace IndividualGames.UniPoly.GameElements
         /// <summary> Deactivate door functionality. </summary>
         public void Deactivate()
         {
+            PhotonController.TransferOwnershipToLocal(GetComponent<PhotonView>());
             transform.DORotate(m_originalRotation.eulerAngles, m_doorOpenSpeed);
             ActivationState = false;
         }

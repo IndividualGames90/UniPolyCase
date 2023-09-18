@@ -18,9 +18,7 @@ namespace IndividualGames.UniPoly.Player
 
         private void Awake()
         {
-            var canvasController = (CanvasController)GameObject.FindGameObjectWithTag(Tags.SceneController)
-                                    .GetComponent<SceneController>()
-                                    .Retrieve(CanvasController.Hash);
+            var canvasController = (CanvasController)SceneController.Instance.Retrieve(CanvasController.Hash);
 
             ItemDetected.Connect(canvasController.GetComponent<CanvasEventHub>().OnItemDetected);
         }
