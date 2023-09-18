@@ -2,6 +2,7 @@ using IndividualGames.UniPoly.Multiplayer;
 using IndividualGames.UniPoly.Player;
 using IndividualGames.UniPoly.SceneManagement;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 namespace IndividualGames.UniPoly.UI
@@ -11,8 +12,6 @@ namespace IndividualGames.UniPoly.UI
     /// </summary>
     public class CanvasController : MonoBehaviour, IRegisterable
     {
-        [SerializeField] private SceneController m_sceneController;
-
         [SerializeField] private TextMeshProUGUI m_playerLabel;
         [SerializeField] private TextMeshProUGUI m_itemPickUpLabel;
         [SerializeField] private GameObject m_connectButton;
@@ -21,7 +20,7 @@ namespace IndividualGames.UniPoly.UI
 
         private void Awake()
         {
-            m_sceneController.Register(Hash, this);
+            SceneController.Instance.Register(Hash, this);
 
             PhotonController.JoinedRoom.Connect(PlayerJoined);
             GetComponent<CanvasEventHub>().ItemDetected.Connect(ItemPickUpUpdated);
@@ -30,12 +29,13 @@ namespace IndividualGames.UniPoly.UI
         /// <summary> Quit application. </summary>
         public void ExitGame()
         {
-            if (Application.platform == RuntimePlatform.Android)
-            {
-                Debug.Log("App Exiting.");
-                PhotonController.Disconnect();
-                Application.Quit();
-            }
+            Debug.Log("App Exiting.");
+            PhotonController.Disconnect();
+            Application.Quit();
+
+#if UNITY_EDITOR
+            EditorApplication.ExitPlaymode();
+#endif
         }
 
         /// <summary> Player Joined game. </summary>

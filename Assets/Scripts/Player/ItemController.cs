@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using IndividualGames.UniPoly.Multiplayer;
+using Photon.Pun;
+using UnityEngine;
 
 namespace IndividualGames.UniPoly.Player
 {
@@ -28,6 +30,7 @@ namespace IndividualGames.UniPoly.Player
             a_grabbedItem.transform.position = m_leftHand.position;
             a_grabbedItem.transform.parent = m_leftHand;
             a_grabbedItem.GetComponent<BoxCollider>().isTrigger = false;
+            PhotonController.TransferOwnershipToLocal(a_grabbedItem.GetComponent<PhotonView>());
         }
 
         public void DropItem()

@@ -107,5 +107,14 @@ namespace IndividualGames.UniPoly.Multiplayer
         {
             PhotonNetwork.LeaveLobby();
         }
+
+        /// <summary> Transfer ownership to local player. </summary>
+        public static void TransferOwnershipToLocal(PhotonView a_photonView)
+        {
+            if (!a_photonView.IsMine)
+            {
+                a_photonView.TransferOwnership(PhotonNetwork.LocalPlayer);
+            }
+        }
     }
 }
